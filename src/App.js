@@ -1,51 +1,59 @@
 import './App.css';
-import * as THREE from "three";
-import { useEffect } from "react";
+import {Canvas} from "@react-three/fiber";
+import {Cylinder, OrbitControls, PerspectiveCamera} from "@react-three/drei";
 
-const initialSetup = () => {
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-  camera.position.set(0, 1, 5);
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize( window.innerWidth, window.innerHeight );
-
-  document.body.appendChild( renderer.domElement );
-
-  return {
-    scene, camera, renderer
+const cylinderConfigs = [
+  {
+    color: "#714CFE",
+    x: -1.8,
+    y: 0.9
+  },
+  {
+    color: "#00FFEE",
+    x: 0,
+    y: 0.9
+  },
+  {
+    color: "#CC6699",
+    x: 1.8,
+    y: 0.9
+  },
+  {
+    color: "#FFEE00",
+    x: -0.9,
+    y: -0.65
+  },
+  {
+    color: "#EE2266",
+    x: 0.9,
+    y: -0.65
   }
-}
-
-const addCubes = (scene) => {
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshBasicMaterial({
-    color: '#66ccff',
-    wireframe: true
-  });
-
-  const cube = new THREE.Mesh(geometry, material)
-
-  scene.add(cube);
-
-  cube.position.set(0, 0, 0);
-
-  return cube;
-}
+]
 
 const App = () => {
-  useEffect(() => {
-    const { scene, camera, renderer } = initialSetup();
-
-    const cube = addCubes(scene);
-
-    renderer.setAnimationLoop(() => {
-      cube.rotation.y += 0.001;
-      renderer.render(scene, camera);
-    });
-  }, []);
-
   return (
-    <div className="App" />
+    <div className="App">
+      <Canvas>
+        <color attach="background" args={"#212121"} />
+        {/*<axesHelper />*/}
+        <PerspectiveCamera makeDefault position={[0, 0, 5]}
+                           fov={50}
+                           aspect={window.innerWidth/window.innerHeight}
+                           near={0.1}
+                           far={1000} />
+        <directionalLight position={[5, 10, 25]} intensity={1} color={"#FFFFFF"}/>
+        <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+
+        { cylinderConfigs.map((cylinderConfig, index) => (
+              <Cylinder args={[1, 1, 0.1, 6]} key={index} position={[
+                  cylinderConfig.x, cylinderConfig.y, 0
+              ]} rotation={[Math.PI / 2, 0, 0]}>
+                <meshPhongMaterial attach="material" color={cylinderConfig.color} />
+              </Cylinder>
+          )) }
+
+      </Canvas>
+    </div>
   );
 }
 
