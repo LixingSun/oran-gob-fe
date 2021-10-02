@@ -32,7 +32,9 @@
       "react-app/jest"
     ]
   },
-  "eslintIgnore": [".eslintrc.js"],
+  "eslintIgnore": [
+    ".eslintrc.js"
+  ],
   "browserslist": {
     "production": [
       ">0.2%",
@@ -58,6 +60,6 @@
     "prettier": "^2.4.1"
   },
   "lint-staged": {
-    "src/**/*.{ts,tsx}": "eslint --fix"
+    "src/**/*.{js,ts,jsx,tsx}": "eslint --fix"
   }
 }

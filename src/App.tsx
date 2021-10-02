@@ -1,5 +1,6 @@
+import React from "react";
 import "./App.css";
-import { useState, FC } from "react";
+import { useState, FC, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Cylinder, PerspectiveCamera, OrbitControls } from "@react-three/drei";
 
@@ -47,7 +48,7 @@ const AnimateCamera: FC<AnimateCameraProps> = ({
 
   const animationRatio = (Math.PI / 2 / 90) * 0.5;
 
-  const calculateDegree = (screenSize, current) => {
+  const calculateDegree = (screenSize: number, current: number): number => {
     const percentage = ((screenSize / 2 - current) / screenSize) * 2;
     return percentage * animationRatio;
   };
@@ -69,6 +70,7 @@ const AnimateCamera: FC<AnimateCameraProps> = ({
 };
 
 const App: FC = () => {
+  const tileRefs = [useRef(), useRef(), useRef(), useRef(), useRef()];
   const [cursorPosition, setCursorPosition] = useState<TypeCursorPosition>([
     null,
     null,
@@ -97,10 +99,14 @@ const App: FC = () => {
 
         {cylinderConfigs.map((cylinderConfig, index) => (
           <Cylinder
+            ref={tileRefs[index]}
             args={[1, 1, 0.1, 6]}
             key={index}
             position={[cylinderConfig.x, cylinderConfig.y, 0]}
             rotation={[Math.PI / 2, 0, 0]}
+            onPointerOver={() => {
+              console.log(index);
+            }}
           >
             <meshPhongMaterial attach="material" color={cylinderConfig.color} />
           </Cylinder>
