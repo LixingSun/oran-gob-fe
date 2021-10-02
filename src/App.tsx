@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { PerspectiveCamera, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { animated } from "@react-spring/three";
-import { useSpring } from "@react-spring/core";
+import { useSprings } from "@react-spring/core";
 
 const cylinderConfigs = [
   {
@@ -48,7 +48,7 @@ const AnimateCamera: FC<AnimateCameraProps> = ({
 }) => {
   const { gl, camera } = useThree();
 
-  const animationRatio = (Math.PI / 2 / 90) * 0.5;
+  const animationRatio = (Math.PI / 2 / 90) * 10;
 
   const calculateDegree = (screenSize: number, current: number): number => {
     const percentage = ((screenSize / 2 - current) / screenSize) * 2;
@@ -83,19 +83,13 @@ const App: FC = () => {
     null,
     null,
   ]);
-  const [hoverTileIndex, setHoverTileIndex] = useState<number>(-1);
-
-  const [active, setActive] = useState(0);
 
   const screenSize: TypeScreenSize = [window.innerWidth, window.innerHeight];
 
-  const { z } = useSpring({
-    z: active ? 0.5 : 0,
-    config: {
-      duration: 300,
-      tension: 400,
-    },
-  });
+  const [springs, api] = useSprings(5, () => ({
+    z: 0,
+    config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 },
+  }));
 
   return (
     <div
@@ -117,32 +111,27 @@ const App: FC = () => {
           color={"#FFFFFF"}
         />
 
-        {cylinderConfigs.map((cylinderConfig, index) => {
-          return (
-            <animated.mesh
-              key={index}
-              ref={tileRefs[index]}
-              onPointerOver={() => {
-                setActive(1);
-                setHoverTileIndex(index);
-              }}
-              onPointerOut={() => {
-                setActive(0);
-                setHoverTileIndex(-1);
-              }}
-              position-x={cylinderConfig.x}
-              position-y={cylinderConfig.y}
-              position-z={index === hoverTileIndex ? z : 0}
-              rotation={[Math.PI / 2, 0, 0]}
-            >
-              <cylinderBufferGeometry args={[1, 1, 0.1, 6]} />
-              <animated.meshPhongMaterial
-                attach="material"
-                color={cylinderConfig.color}
-              />
-            </animated.mesh>
-          );
-        })}
+        {cylinderConfigs.map((cylinderConfig, index) => (
+          <animated.mesh
+            key={index}
+            ref={tileRefs[index]}
+            onPointerOver={() => {
+              api.start((i) => ({
+                z: i === index ? 0.5 : 0,
+              }));
+            }}
+            position-x={cylinderConfig.x}
+            position-y={cylinderConfig.y}
+            position-z={springs[index].z}
+            rotation={[Math.PI / 2, 0, 0]}
+          >
+            <cylinderBufferGeometry args={[1, 1, 0.1, 6]} />
+            <animated.meshPhongMaterial
+              attach="material"
+              color={cylinderConfig.color}
+            />
+          </animated.mesh>
+        ))}
 
         <AnimateCamera
           cursorPosition={cursorPosition}
