@@ -1,27 +1,40 @@
 import "./App.css";
-import React, { useState, FC, useRef } from "react";
+import React, { useState, FC } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { PerspectiveCamera, OrbitControls } from "@react-three/drei";
-import * as THREE from "three";
-import { animated } from "@react-spring/three";
+import { PerspectiveCamera, OrbitControls, Text } from "@react-three/drei";
+import { animated, SpringRef, SpringValue } from "@react-spring/three";
 import { useSprings } from "@react-spring/core";
 
-const data: string[] = ["前端", "后端", "DevOps", "Me", "架构", "测试", "游戏"];
+const data: string[] = [
+  "F/E",
+  "B/E",
+  "DevOps",
+  "Me",
+  "Architecture",
+  "Testing",
+  "Gaming",
+];
 
-const cylinderConfigs = [
+interface ITileConfig {
+  color: string;
+  x: number;
+  y: number;
+}
+
+const tileConfigs: ITileConfig[] = [
   {
     color: "#90CAF9",
-    x: -0.9,
-    y: 1.55,
+    x: -18,
+    y: 31,
   },
   {
     color: "#FFCC80",
-    x: 0.9,
-    y: 1.55,
+    x: 18,
+    y: 31,
   },
   {
     color: "#80CBC4",
-    x: -1.8,
+    x: -36,
     y: 0,
   },
   {
@@ -31,18 +44,18 @@ const cylinderConfigs = [
   },
   {
     color: "#CC6699",
-    x: 1.8,
+    x: 36,
     y: 0,
   },
   {
     color: "#FFEE00",
-    x: -0.9,
-    y: -1.55,
+    x: -18,
+    y: -31,
   },
   {
     color: "#EE2266",
-    x: 0.9,
-    y: -1.55,
+    x: 18,
+    y: -31,
   },
 ];
 
@@ -83,11 +96,57 @@ const AnimateCamera: FC<AnimateCameraProps> = ({
   );
 };
 
+interface TileProps {
+  tileConfig: ITileConfig;
+  tileIndex: number;
+  animationSprings: { z: SpringValue<number> }[];
+  animationApi: SpringRef<{ z: number }>;
+}
+
+const Tile: FC<TileProps> = ({
+  tileConfig,
+  tileIndex,
+  animationSprings,
+  animationApi,
+}) => {
+  return (
+    <>
+      <animated.mesh
+        onPointerOver={() => {
+          animationApi.start((animatedIndex) => {
+            if (animatedIndex === tileIndex) return { z: 10 };
+            return {};
+          });
+        }}
+        onPointerOut={() => {
+          animationApi.start((animatedIndex) => {
+            if (animatedIndex === tileIndex) return { z: 0 };
+            return {};
+          });
+        }}
+        position-x={tileConfig.x}
+        position-y={tileConfig.y}
+        position-z={animationSprings[tileIndex].z}
+        rotation={[Math.PI / 2, 0, 0]}
+      >
+        <cylinderBufferGeometry args={[20, 20, 2, 6]} />
+        <meshPhongMaterial attach="material" color={tileConfig.color} />
+      </animated.mesh>
+      <Text
+        font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
+        color="#F0F0F0"
+        fontSize={5}
+        position-x={tileConfig.x}
+        position-y={tileConfig.y}
+        position-z={2}
+      >
+        {data[tileIndex]}
+      </Text>
+    </>
+  );
+};
+
 const App: FC = () => {
-  const tileRefs = [];
-  for (let i = 0; i < data.length; i++) {
-    tileRefs.push(useRef<THREE.Mesh>());
-  }
   const [cursorPosition, setCursorPosition] = useState<TypeCursorPosition>([
     null,
     null,
@@ -108,45 +167,27 @@ const App: FC = () => {
       <Canvas onCreated={(state) => state.gl.setClearColor("#212121")}>
         <PerspectiveCamera
           makeDefault
-          position={[0, 0, 6]}
+          position={[0, 0, 100]}
           fov={50}
           aspect={window.innerWidth / window.innerHeight}
           near={0.1}
           far={1000}
         />
         <directionalLight
-          position={[5, 10, 25]}
+          position={[30, 40, 70]}
           intensity={1}
           color={"#FFFFFF"}
         />
 
-        {cylinderConfigs.map((cylinderConfig, cylinderIndex) => (
-          <animated.mesh
-            key={cylinderIndex}
-            ref={tileRefs[cylinderIndex]}
-            onPointerOver={() => {
-              api.start((animatedIndex) => {
-                if (animatedIndex === cylinderIndex) return { z: 0.5 };
-                return {};
-              });
-            }}
-            onPointerOut={() => {
-              api.start((animatedIndex) => {
-                if (animatedIndex === cylinderIndex) return { z: 0 };
-                return {};
-              });
-            }}
-            position-x={cylinderConfig.x}
-            position-y={cylinderConfig.y}
-            position-z={springs[cylinderIndex].z}
-            rotation={[Math.PI / 2, 0, 0]}
-          >
-            <cylinderBufferGeometry args={[1, 1, 0.1, 6]} />
-            <animated.meshPhongMaterial
-              attach="material"
-              color={cylinderConfig.color}
+        {tileConfigs.map((tileConfig, tileIndex) => (
+          <animated.group key={tileIndex}>
+            <Tile
+              tileConfig={tileConfig}
+              tileIndex={tileIndex}
+              animationSprings={springs}
+              animationApi={api}
             />
-          </animated.mesh>
+          </animated.group>
         ))}
 
         <AnimateCamera
