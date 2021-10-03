@@ -6,31 +6,43 @@ import * as THREE from "three";
 import { animated } from "@react-spring/three";
 import { useSprings } from "@react-spring/core";
 
+const data: string[] = ["前端", "后端", "DevOps", "Me", "架构", "测试", "游戏"];
+
 const cylinderConfigs = [
   {
-    color: "#714CFE",
-    x: -1.8,
-    y: 0.9,
+    color: "#90CAF9",
+    x: -0.9,
+    y: 1.55,
   },
   {
-    color: "#00FFEE",
+    color: "#FFCC80",
+    x: 0.9,
+    y: 1.55,
+  },
+  {
+    color: "#80CBC4",
+    x: -1.8,
+    y: 0,
+  },
+  {
+    color: "#000000",
     x: 0,
-    y: 0.9,
+    y: 0,
   },
   {
     color: "#CC6699",
     x: 1.8,
-    y: 0.9,
+    y: 0,
   },
   {
     color: "#FFEE00",
     x: -0.9,
-    y: -0.65,
+    y: -1.55,
   },
   {
     color: "#EE2266",
     x: 0.9,
-    y: -0.65,
+    y: -1.55,
   },
 ];
 
@@ -72,13 +84,10 @@ const AnimateCamera: FC<AnimateCameraProps> = ({
 };
 
 const App: FC = () => {
-  const tileRefs = [
-    useRef<THREE.Mesh>(),
-    useRef<THREE.Mesh>(),
-    useRef<THREE.Mesh>(),
-    useRef<THREE.Mesh>(),
-    useRef<THREE.Mesh>(),
-  ];
+  const tileRefs = [];
+  for (let i = 0; i < data.length; i++) {
+    tileRefs.push(useRef<THREE.Mesh>());
+  }
   const [cursorPosition, setCursorPosition] = useState<TypeCursorPosition>([
     null,
     null,
@@ -86,7 +95,7 @@ const App: FC = () => {
 
   const screenSize: TypeScreenSize = [window.innerWidth, window.innerHeight];
 
-  const [springs, api] = useSprings(5, () => ({
+  const [springs, api] = useSprings(data.length, () => ({
     z: 0,
     config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 },
   }));
@@ -99,7 +108,7 @@ const App: FC = () => {
       <Canvas onCreated={(state) => state.gl.setClearColor("#212121")}>
         <PerspectiveCamera
           makeDefault
-          position={[0, 0, 5]}
+          position={[0, 0, 6]}
           fov={50}
           aspect={window.innerWidth / window.innerHeight}
           near={0.1}
