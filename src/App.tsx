@@ -99,8 +99,8 @@ const AnimateCamera: FC<AnimateCameraProps> = ({
 interface TileProps {
   tileConfig: ITileConfig;
   tileIndex: number;
-  animationSprings: { z: SpringValue<number> }[];
-  animationApi: SpringRef<{ z: number }>;
+  animationSprings: { z: SpringValue<number>; textZ: SpringValue<number> }[];
+  animationApi: SpringRef<{ z: number; textZ: number }>;
 }
 
 const Tile: FC<TileProps> = ({
@@ -109,18 +109,20 @@ const Tile: FC<TileProps> = ({
   animationSprings,
   animationApi,
 }) => {
+  const AnimtedText = animated(Text);
+
   return (
     <>
       <animated.mesh
         onPointerOver={() => {
           animationApi.start((animatedIndex) => {
-            if (animatedIndex === tileIndex) return { z: 10 };
+            if (animatedIndex === tileIndex) return { z: 10, textZ: 12 };
             return {};
           });
         }}
         onPointerOut={() => {
           animationApi.start((animatedIndex) => {
-            if (animatedIndex === tileIndex) return { z: 0 };
+            if (animatedIndex === tileIndex) return { z: 0, textZ: 2 };
             return {};
           });
         }}
@@ -132,16 +134,16 @@ const Tile: FC<TileProps> = ({
         <cylinderBufferGeometry args={[20, 20, 2, 6]} />
         <meshPhongMaterial attach="material" color={tileConfig.color} />
       </animated.mesh>
-      <Text
+      <AnimtedText
         font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
         color="#F0F0F0"
         fontSize={5}
         position-x={tileConfig.x}
         position-y={tileConfig.y}
-        position-z={2}
+        position-z={animationSprings[tileIndex].textZ}
       >
         {data[tileIndex]}
-      </Text>
+      </AnimtedText>
     </>
   );
 };
@@ -156,6 +158,7 @@ const App: FC = () => {
 
   const [springs, api] = useSprings(data.length, () => ({
     z: 0,
+    textZ: 2,
     config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 },
   }));
 
