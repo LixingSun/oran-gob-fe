@@ -111,18 +111,25 @@ const App: FC = () => {
           color={"#FFFFFF"}
         />
 
-        {cylinderConfigs.map((cylinderConfig, index) => (
+        {cylinderConfigs.map((cylinderConfig, cylinderIndex) => (
           <animated.mesh
-            key={index}
-            ref={tileRefs[index]}
+            key={cylinderIndex}
+            ref={tileRefs[cylinderIndex]}
             onPointerOver={() => {
-              api.start((i) => ({
-                z: i === index ? 0.5 : 0,
-              }));
+              api.start((animatedIndex) => {
+                if (animatedIndex === cylinderIndex) return { z: 0.5 };
+                return {};
+              });
+            }}
+            onPointerOut={() => {
+              api.start((animatedIndex) => {
+                if (animatedIndex === cylinderIndex) return { z: 0 };
+                return {};
+              });
             }}
             position-x={cylinderConfig.x}
             position-y={cylinderConfig.y}
-            position-z={springs[index].z}
+            position-z={springs[cylinderIndex].z}
             rotation={[Math.PI / 2, 0, 0]}
           >
             <cylinderBufferGeometry args={[1, 1, 0.1, 6]} />

@@ -34,7 +34,7 @@
     ]
   },
   "eslintIgnore": [
-    ".eslintrc.js"
+    "*.js"
   ],
   "browserslist": {
     "production": [
