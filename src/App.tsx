@@ -4,16 +4,9 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { PerspectiveCamera, OrbitControls, Text } from "@react-three/drei";
 import { animated, SpringRef, SpringValue } from "@react-spring/three";
 import { useSprings } from "@react-spring/core";
+import cnFont from "./fonts/cn-font.ttf";
 
-const data: string[] = [
-  "F/E",
-  "B/E",
-  "DevOps",
-  "Me",
-  "Architecture",
-  "Testing",
-  "Gaming",
-];
+const data: string[] = ["前端", "后端", "DevOps", "Me", "架构", "测试", "游戏"];
 
 interface ITileConfig {
   color: string;
@@ -109,8 +102,7 @@ const Tile: FC<TileProps> = ({
   animationSprings,
   animationApi,
 }) => {
-  const AnimtedText = animated(Text);
-
+  const AnimatedText = animated(Text);
   return (
     <>
       <animated.mesh
@@ -134,16 +126,16 @@ const Tile: FC<TileProps> = ({
         <cylinderBufferGeometry args={[20, 20, 2, 6]} />
         <meshPhongMaterial attach="material" color={tileConfig.color} />
       </animated.mesh>
-      <AnimtedText
-        font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
+      <AnimatedText
+        font={cnFont}
         color="#F0F0F0"
-        fontSize={5}
+        fontSize={8}
         position-x={tileConfig.x}
         position-y={tileConfig.y}
         position-z={animationSprings[tileIndex].textZ}
       >
         {data[tileIndex]}
-      </AnimtedText>
+      </AnimatedText>
     </>
   );
 };
