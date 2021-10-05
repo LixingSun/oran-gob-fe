@@ -5,6 +5,7 @@ import { PerspectiveCamera, OrbitControls, Text } from "@react-three/drei";
 import { animated, SpringRef, SpringValue } from "@react-spring/three";
 import { useSprings } from "@react-spring/core";
 import cnFont from "./fonts/cn-font.ttf";
+import { easeCubicOut } from "d3-ease";
 
 const data: string[] = ["前端", "后端", "DevOps", "Me", "架构", "测试", "游戏"];
 
@@ -92,15 +93,23 @@ const AnimateCamera: FC<AnimateCameraProps> = ({
 interface TileProps {
   tileConfig: ITileConfig;
   tileIndex: number;
-  animationSprings: { z: SpringValue<number>; textZ: SpringValue<number> }[];
   animationApi: SpringRef<{ z: number; textZ: number }>;
+  x: SpringValue<number>;
+  y: SpringValue<number>;
+  z: SpringValue<number>;
+  textZ: SpringValue<number>;
+  onClick: () => void;
 }
 
 const Tile: FC<TileProps> = ({
   tileConfig,
   tileIndex,
-  animationSprings,
   animationApi,
+  x,
+  y,
+  z,
+  textZ,
+  onClick,
 }) => {
   const AnimatedText = animated(Text);
   return (
@@ -118,9 +127,12 @@ const Tile: FC<TileProps> = ({
             return {};
           });
         }}
-        position-x={tileConfig.x}
-        position-y={tileConfig.y}
-        position-z={animationSprings[tileIndex].z}
+        onClick={() => {
+          onClick?.();
+        }}
+        position-x={x}
+        position-y={y}
+        position-z={z}
         rotation={[Math.PI / 2, 0, 0]}
       >
         <cylinderBufferGeometry args={[20, 20, 2, 6]} />
@@ -130,15 +142,17 @@ const Tile: FC<TileProps> = ({
         font={cnFont}
         color="#F0F0F0"
         fontSize={8}
-        position-x={tileConfig.x}
-        position-y={tileConfig.y}
-        position-z={animationSprings[tileIndex].textZ}
+        position-x={x}
+        position-y={y}
+        position-z={textZ}
       >
         {data[tileIndex]}
       </AnimatedText>
     </>
   );
 };
+
+const landingDuration = 1200;
 
 const App: FC = () => {
   const [cursorPosition, setCursorPosition] = useState<TypeCursorPosition>([
@@ -148,11 +162,26 @@ const App: FC = () => {
 
   const screenSize: TypeScreenSize = [window.innerWidth, window.innerHeight];
 
-  const [springs, api] = useSprings(data.length, () => ({
-    z: 0,
-    textZ: 2,
-    config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 },
-  }));
+  const [hoverAnimationSprings, hoverAnimationApi] = useSprings(
+    data.length,
+    () => ({
+      z: 0,
+      textZ: 2,
+      config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 },
+    })
+  );
+
+  const [landingAnimationSprings, landingAnimationApi] = useSprings(
+    data.length,
+    (index) => ({
+      x: tileConfigs[index].x * 10,
+      y: tileConfigs[index].y * 10,
+      config: {
+        duration: landingDuration,
+        easing: easeCubicOut,
+      },
+    })
+  );
 
   return (
     <div
@@ -162,7 +191,7 @@ const App: FC = () => {
       <Canvas onCreated={(state) => state.gl.setClearColor("#212121")}>
         <PerspectiveCamera
           makeDefault
-          position={[0, 0, 100]}
+          position={[0, 0, 110]}
           fov={50}
           aspect={window.innerWidth / window.innerHeight}
           near={0.1}
@@ -179,8 +208,19 @@ const App: FC = () => {
             <Tile
               tileConfig={tileConfig}
               tileIndex={tileIndex}
-              animationSprings={springs}
-              animationApi={api}
+              animationApi={hoverAnimationApi}
+              x={landingAnimationSprings[tileIndex]?.x}
+              y={landingAnimationSprings[tileIndex]?.y}
+              z={hoverAnimationSprings[tileIndex]?.z}
+              textZ={hoverAnimationSprings[tileIndex]?.textZ}
+              onClick={() => {
+                tileIndex === 3
+                  ? landingAnimationApi.start((animatedIndex) => ({
+                      x: tileConfigs[animatedIndex].x,
+                      y: tileConfigs[animatedIndex].y,
+                    }))
+                  : null;
+              }}
             />
           </animated.group>
         ))}
