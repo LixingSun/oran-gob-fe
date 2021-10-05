@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useState, FC } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { PerspectiveCamera, OrbitControls, Text } from "@react-three/drei";
 import { animated, SpringRef, SpringValue } from "@react-spring/three";
 import { useSprings } from "@react-spring/core";
@@ -91,6 +91,7 @@ const AnimateCamera: FC<AnimateCameraProps> = ({
 };
 
 interface TileProps {
+  font: any;
   tileConfig: ITileConfig;
   tileIndex: number;
   animationApi: SpringRef<{ z: number; textZ: number }>;
@@ -155,6 +156,8 @@ const Tile: FC<TileProps> = ({
 const landingDuration = 1200;
 
 const App: FC = () => {
+  const font = useLoader(FontLoader, "/font/en-font.json");
+
   const [cursorPosition, setCursorPosition] = useState<TypeCursorPosition>([
     null,
     null,
