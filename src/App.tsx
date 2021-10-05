@@ -156,8 +156,6 @@ const Tile: FC<TileProps> = ({
 const landingDuration = 1200;
 
 const App: FC = () => {
-  const font = useLoader(FontLoader, "/font/en-font.json");
-
   const [cursorPosition, setCursorPosition] = useState<TypeCursorPosition>([
     null,
     null,
