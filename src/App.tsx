@@ -18,37 +18,37 @@ interface ITileConfig {
 
 const tileConfigs: ITileConfig[] = [
   {
-    color: "#90CAF9",
+    color: "#64B5F6",
     x: -18,
     y: 31,
   },
   {
-    color: "#FFCC80",
+    color: "#FFCA28",
     x: 18,
     y: 31,
   },
   {
-    color: "#80CBC4",
+    color: "#43A047",
     x: -36,
     y: 0,
   },
   {
-    color: "#000000",
+    color: "#6200EA",
     x: 0,
     y: 0,
   },
   {
-    color: "#CC6699",
+    color: "#795548",
     x: 36,
     y: 0,
   },
   {
-    color: "#FFEE00",
+    color: "#546E7A",
     x: -18,
     y: -31,
   },
   {
-    color: "#EE2266",
+    color: "#F44336",
     x: 18,
     y: -31,
   },
@@ -119,13 +119,13 @@ const Tile: FC<TileProps> = ({
       <animated.mesh
         onPointerOver={() => {
           animationApi.start((animatedIndex) => {
-            if (animatedIndex === tileIndex) return { z: 10, textZ: 12 };
+            if (animatedIndex === tileIndex) return { z: 10, textZ: 17 };
             return {};
           });
         }}
         onPointerOut={() => {
           animationApi.start((animatedIndex) => {
-            if (animatedIndex === tileIndex) return { z: 0, textZ: 2 };
+            if (animatedIndex === tileIndex) return { z: 0, textZ: 7 };
             return {};
           });
         }}
@@ -137,13 +137,13 @@ const Tile: FC<TileProps> = ({
         position-z={z}
         rotation={[Math.PI / 2, 0, 0]}
       >
-        <cylinderBufferGeometry args={[20, 20, 2, 6]} />
+        <cylinderBufferGeometry args={[20, 20, 5, 6]} />
         <meshPhongMaterial attach="material" color={tileConfig.color} />
       </animated.mesh>
       <AnimatedText
         font={cnFont}
         color="#F0F0F0"
-        fontSize={8}
+        fontSize={7}
         position-x={x}
         position-y={y}
         position-z={textZ}
@@ -161,7 +161,7 @@ const App: FC = () => {
     data.length,
     () => ({
       z: 0,
-      textZ: 2,
+      textZ: 7,
       config: {
         duration: 700,
         easing: easeCubicInOut,
@@ -187,7 +187,7 @@ const App: FC = () => {
       <Canvas onCreated={(state) => state.gl.setClearColor("#212121")}>
         <Stats showPanel={0} className="stats" />
         <directionalLight
-          position={[30, 40, 70]}
+          position={[90, 90, 120]}
           intensity={1}
           color={"#FFFFFF"}
         />
