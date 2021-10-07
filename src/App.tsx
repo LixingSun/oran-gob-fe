@@ -1,19 +1,23 @@
 import "./App.css";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
 import { animated } from "@react-spring/three";
-import { useSprings } from "@react-spring/core";
+import { useSprings, useSpring } from "@react-spring/core";
 import { DEFAULT_SECTIONS, TILE_CONFIGS } from "./constants/config";
 import { Tile } from "./components/Tile";
 import { AnimateCamera } from "./components/AnimatedCamera";
 import {
+  DIVING_ANIMATION_INIT_CONFIG,
+  DIVING_ANIMATION_UPDATE,
   LANDING_ANIMATION_INIT_CONFIG,
   LANDING_ANIMATION_UPDATE,
+  LANDING_DURATION,
   TILE_HOVER_ANIMATION_INIT_CONFIG,
 } from "./constants/animation";
 
 const App: FC = () => {
+  const [landingDone, setLandingDone] = useState(false);
   const [hoverAnimationSprings, hoverAnimationApi] = useSprings(
     DEFAULT_SECTIONS.length,
     TILE_HOVER_ANIMATION_INIT_CONFIG
@@ -22,6 +26,10 @@ const App: FC = () => {
   const [landingAnimationSprings, landingAnimationApi] = useSprings(
     DEFAULT_SECTIONS.length,
     LANDING_ANIMATION_INIT_CONFIG
+  );
+
+  const [divingAnimationSpring, divingAnimationApi] = useSpring(
+    DIVING_ANIMATION_INIT_CONFIG
   );
 
   return (
@@ -47,6 +55,11 @@ const App: FC = () => {
               onClick={() => {
                 if (tileIndex === 3) {
                   landingAnimationApi.start(LANDING_ANIMATION_UPDATE);
+                  setTimeout(() => {
+                    setLandingDone(true);
+                  }, LANDING_DURATION);
+                } else {
+                  divingAnimationApi.start(DIVING_ANIMATION_UPDATE);
                 }
               }}
               text={DEFAULT_SECTIONS[tileIndex]}
@@ -54,7 +67,15 @@ const App: FC = () => {
           </animated.group>
         ))}
 
-        <AnimateCamera cameraZ={landingAnimationSprings[0].cameraZ} />
+        <AnimateCamera
+          cameraX={divingAnimationSpring.cameraX}
+          cameraY={divingAnimationSpring.cameraY}
+          cameraZ={
+            landingDone
+              ? divingAnimationSpring.cameraZ
+              : landingAnimationSprings[0].cameraZ
+          }
+        />
       </Canvas>
     </div>
   );
