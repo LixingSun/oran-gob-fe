@@ -47,3 +47,6 @@ export const TILE_CONFIGS: ITileConfig[] = [
     y: -31,
   },
 ];
+
+export const TILE_NAVIGATION_X_LIST = [-114, -76, -38, 0, 38, 76, 114];
+export const TILE_NAVIGATION_Y = 65;

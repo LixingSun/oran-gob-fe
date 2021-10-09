@@ -4,16 +4,10 @@ import { useThree } from "@react-three/fiber";
 import { PerspectiveCamera } from "three";
 
 interface AnimateCameraProps {
-  cameraX: SpringValue<number>;
-  cameraY: SpringValue<number>;
   cameraZ: SpringValue<number>;
 }
 
-export const AnimateCamera: FC<AnimateCameraProps> = ({
-  cameraX,
-  cameraY,
-  cameraZ,
-}) => {
+export const AnimateCamera: FC<AnimateCameraProps> = ({ cameraZ }) => {
   const { camera, set, size } = useThree();
   const cameraRef = React.useRef<PerspectiveCamera>();
 
@@ -36,8 +30,8 @@ export const AnimateCamera: FC<AnimateCameraProps> = ({
   return (
     <animated.perspectiveCamera
       ref={cameraRef}
-      position-x={cameraX}
-      position-y={cameraY}
+      position-x={0}
+      position-y={0}
       position-z={cameraZ}
       fov={50}
       aspect={window.innerWidth / window.innerHeight}

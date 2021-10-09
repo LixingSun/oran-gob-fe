@@ -28,13 +28,14 @@ const App: FC = () => {
     LANDING_ANIMATION_INIT_CONFIG
   );
 
-  const [divingAnimationSpring, divingAnimationApi] = useSpring(
+  const [divingAnimationSprings, divingAnimationApi] = useSprings(
+    DEFAULT_SECTIONS.length,
     DIVING_ANIMATION_INIT_CONFIG
   );
 
   return (
     <div className="App">
-      <Canvas onCreated={(state) => state.gl.setClearColor("#212121")}>
+      <Canvas onCreated={(state) => state.gl.setClearColor("#FFFFFF")}>
         <Stats showPanel={0} className="stats" />
         <directionalLight
           position={[90, 90, 120]}
@@ -48,12 +49,20 @@ const App: FC = () => {
               tileConfig={tileConfig}
               tileIndex={tileIndex}
               animationApi={hoverAnimationApi}
-              x={landingAnimationSprings[tileIndex]?.x}
-              y={landingAnimationSprings[tileIndex]?.y}
+              x={
+                landingDone
+                  ? divingAnimationSprings[tileIndex]?.x
+                  : landingAnimationSprings[tileIndex]?.x
+              }
+              y={
+                landingDone
+                  ? divingAnimationSprings[tileIndex]?.y
+                  : landingAnimationSprings[tileIndex]?.y
+              }
               z={hoverAnimationSprings[tileIndex]?.z}
               textZ={hoverAnimationSprings[tileIndex]?.textZ}
               onClick={() => {
-                if (tileIndex === 3) {
+                if (tileIndex === 3 && !landingDone) {
                   landingAnimationApi.start(LANDING_ANIMATION_UPDATE);
                   setTimeout(() => {
                     setLandingDone(true);
@@ -68,11 +77,9 @@ const App: FC = () => {
         ))}
 
         <AnimateCamera
-          cameraX={divingAnimationSpring.cameraX}
-          cameraY={divingAnimationSpring.cameraY}
           cameraZ={
             landingDone
-              ? divingAnimationSpring.cameraZ
+              ? divingAnimationSprings[0].cameraZ
               : landingAnimationSprings[0].cameraZ
           }
         />

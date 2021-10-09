@@ -1,15 +1,15 @@
-import { easeCubicOut, easeCubicInOut } from "d3-ease";
-import { TILE_CONFIGS } from "./config";
+import { easeCubicOut, easeCubicInOut, easeQuadOut } from "d3-ease";
+import {
+  TILE_CONFIGS,
+  TILE_NAVIGATION_X_LIST,
+  TILE_NAVIGATION_Y,
+} from "./config";
 
-export const LANDING_DURATION = 2400;
+export const LANDING_DURATION = 2000;
 export const CAMERA_LANDING_ORIGINAL_Z = 80;
 export const CAMERA_LANDING_ANIMATED_Z = 120;
-export const CAMERA_DIVING_ORIGINAL_X = 0;
-export const CAMERA_DIVING_ORIGINAL_Y = 0;
-export const CAMERA_DIVING_ORIGINAL_Z = CAMERA_LANDING_ANIMATED_Z;
-export const CAMERA_DIVING_ANIMATED_X = 130;
-export const CAMERA_DIVING_ANIMATED_Y = -50;
-export const CAMERA_DIVING_ANIMATED_Z = 220;
+export const DIVING_DURATION = 1200;
+export const CAMERA_DIVING_ANIMATED_Z = 200;
 
 export const LANDING_ANIMATION_INIT_CONFIG = (index: number) => ({
   x: TILE_CONFIGS[index].x * 10,
@@ -27,19 +27,20 @@ export const LANDING_ANIMATION_UPDATE = (animatedIndex: number) => ({
   cameraZ: CAMERA_LANDING_ANIMATED_Z,
 });
 
-export const DIVING_ANIMATION_INIT_CONFIG = () => ({
-  cameraX: CAMERA_DIVING_ORIGINAL_X,
-  cameraY: CAMERA_DIVING_ORIGINAL_Y,
-  cameraZ: CAMERA_DIVING_ORIGINAL_Z,
+export const DIVING_ANIMATION_INIT_CONFIG = (index) => ({
+  x: TILE_CONFIGS[index].x,
+  y: TILE_CONFIGS[index].y,
+  cameraZ: CAMERA_LANDING_ANIMATED_Z,
+
   config: {
-    duration: LANDING_DURATION,
-    easing: easeCubicInOut,
+    duration: DIVING_DURATION,
+    easing: easeQuadOut,
   },
 });
 
-export const DIVING_ANIMATION_UPDATE = () => ({
-  cameraX: CAMERA_DIVING_ANIMATED_X,
-  cameraY: CAMERA_DIVING_ANIMATED_Y,
+export const DIVING_ANIMATION_UPDATE = (animatedIndex) => ({
+  x: TILE_NAVIGATION_X_LIST[animatedIndex],
+  y: TILE_NAVIGATION_Y,
   cameraZ: CAMERA_DIVING_ANIMATED_Z,
 });
 

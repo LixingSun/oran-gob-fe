@@ -57,7 +57,7 @@ export const Tile: FC<TileProps> = ({
         rotation={[Math.PI / 2, 0, 0]}
       >
         <cylinderBufferGeometry args={[20, 20, 5, 6]} />
-        <meshPhongMaterial attach="material" color={tileConfig.color} />
+        <meshPhongMaterial attach="material" color="#000000" />
       </animated.mesh>
       <AnimatedText
         font={cnFont}
