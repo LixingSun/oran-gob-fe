@@ -8,7 +8,8 @@ import {
 export const LANDING_DURATION = 2000;
 export const CAMERA_LANDING_ORIGINAL_Z = 80;
 export const CAMERA_LANDING_ANIMATED_Z = 120;
-export const DIVING_DURATION = 1200;
+export const DIVING_DURATION = 1000;
+export const DIVING_CAMERA_DURATION = 1800;
 export const CAMERA_DIVING_ANIMATED_Z = 200;
 
 export const LANDING_ANIMATION_INIT_CONFIG = (index: number) => ({
@@ -30,17 +31,30 @@ export const LANDING_ANIMATION_UPDATE = (animatedIndex: number) => ({
 export const DIVING_ANIMATION_INIT_CONFIG = (index: number) => ({
   x: TILE_CONFIGS[index].x,
   y: TILE_CONFIGS[index].y,
-  cameraZ: CAMERA_LANDING_ANIMATED_Z,
-
   config: {
     duration: DIVING_DURATION,
     easing: easeQuadInOut,
   },
 });
 
-export const DIVING_ANIMATION_UPDATE = (animatedIndex: number) => ({
-  x: TILE_NAVIGATION_X_LIST[animatedIndex],
-  y: TILE_NAVIGATION_Y,
+export const DIVING_ANIMATION_UPDATE =
+  (tileIndex: number) => (animatedIndex: number) => {
+    if (tileIndex === animatedIndex)
+      return {
+        x: TILE_NAVIGATION_X_LIST[animatedIndex],
+        y: TILE_NAVIGATION_Y,
+      };
+  };
+
+export const DIVING_CAMERA_ANIMATION_INIT_CONFIG = () => ({
+  cameraZ: CAMERA_LANDING_ANIMATED_Z,
+  config: {
+    duration: DIVING_CAMERA_DURATION,
+    easing: easeQuadInOut,
+  },
+});
+
+export const DIVING_CAMERA_ANIMATION_UPDATE = () => ({
   cameraZ: CAMERA_DIVING_ANIMATED_Z,
 });
 
