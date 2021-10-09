@@ -84,3 +84,25 @@ export const TILE_RESET_ANIMATION_UPDATE =
     if (animatedIndex === tileIndex)
       return { z: TILE_ORIGINAL_Z, textZ: TILE_TEXT_ORIGINAL_Z };
   };
+
+const CENTER_TILE_COLOR = "#6200EA";
+const DEFAULT_TILE_COLOR = "#000000";
+
+export const NAVIGATING_ANIMATION_INIT_CONFIG = (index: number) => () => ({
+  color: index === 3 ? TILE_CONFIGS[index].color : DEFAULT_TILE_COLOR,
+  config: {
+    duration: DIVING_DURATION,
+    easing: easeCubicOut,
+  },
+});
+
+export const NAVIGATING_ANIMATION_UPDATE = (
+  active: boolean,
+  tileIndex: number
+) => ({
+  color: active
+    ? TILE_CONFIGS[tileIndex].color
+    : tileIndex === 3
+    ? TILE_CONFIGS[tileIndex].color
+    : DEFAULT_TILE_COLOR,
+});

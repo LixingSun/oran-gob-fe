@@ -5,7 +5,8 @@ import { animated, SpringRef } from "@react-spring/three";
 import { useSprings, useSpring } from "@react-spring/core";
 import {
   CANVAS_BG_COLOR,
-  DEFAULT_SECTIONS,
+  EPICS,
+  EPICS_AMOUNT,
   TILE_CONFIGS,
 } from "./constants/config";
 import { Tile } from "./components/Tile";
@@ -18,6 +19,7 @@ import {
   LANDING_ANIMATION_INIT_CONFIG,
   LANDING_ANIMATION_UPDATE,
   LANDING_DURATION,
+  NAVIGATING_ANIMATION_INIT_CONFIG,
   TILE_HOVER_ANIMATION_INIT_CONFIG,
 } from "./constants/animation";
 
@@ -31,7 +33,7 @@ const startDiving = (
   let delay = 300;
   animationApi.start(DIVING_ANIMATION_UPDATE(startIndex));
 
-  for (let index = 0; index < DEFAULT_SECTIONS.length; index++) {
+  for (let index = 0; index < EPICS_AMOUNT; index++) {
     if (index !== startIndex) {
       setTimeout(() => {
         animationApi.start(DIVING_ANIMATION_UPDATE(index));
@@ -42,21 +44,20 @@ const startDiving = (
 
 const App: FC = () => {
   const [landingDone, setLandingDone] = useState(false);
+  const [activeEpicIndex, setActiveEpicIndex] = useState<number>(null);
+
   const [hoverAnimationSprings, hoverAnimationApi] = useSprings(
-    DEFAULT_SECTIONS.length,
+    EPICS_AMOUNT,
     TILE_HOVER_ANIMATION_INIT_CONFIG
   );
-
   const [landingAnimationSprings, landingAnimationApi] = useSprings(
-    DEFAULT_SECTIONS.length,
+    EPICS_AMOUNT,
     LANDING_ANIMATION_INIT_CONFIG
   );
-
   const [divingAnimationSprings, divingAnimationApi] = useSprings(
-    DEFAULT_SECTIONS.length,
+    EPICS_AMOUNT,
     DIVING_ANIMATION_INIT_CONFIG
   );
-
   const [divingCameraAnimationSpring, divingCameraAnimationApi] = useSpring(
     DIVING_CAMERA_ANIMATION_INIT_CONFIG
   );
@@ -65,7 +66,7 @@ const App: FC = () => {
     <div className="App">
       <Canvas onCreated={(state) => state.gl.setClearColor(CANVAS_BG_COLOR)}>
         <directionalLight
-          position={[90, 90, 120]}
+          position={[40, 70, 100]}
           intensity={1}
           color={"#FFFFFF"}
         />
@@ -74,6 +75,7 @@ const App: FC = () => {
           <animated.group key={tileIndex}>
             <Tile
               tileIndex={tileIndex}
+              active={tileIndex === activeEpicIndex}
               animationApi={hoverAnimationApi}
               x={
                 landingDone
@@ -94,14 +96,19 @@ const App: FC = () => {
                     setLandingDone(true);
                   }, LANDING_DURATION);
                 } else {
-                  startDiving(
-                    divingAnimationApi,
-                    divingCameraAnimationApi,
-                    tileIndex
-                  );
+                  if (activeEpicIndex === null) {
+                    startDiving(
+                      divingAnimationApi,
+                      divingCameraAnimationApi,
+                      tileIndex
+                    );
+                    setActiveEpicIndex(tileIndex);
+                  } else {
+                    setActiveEpicIndex(tileIndex);
+                  }
                 }
               }}
-              text={DEFAULT_SECTIONS[tileIndex]}
+              text={EPICS[tileIndex]}
             />
           </animated.group>
         ))}

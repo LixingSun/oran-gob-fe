@@ -2,7 +2,7 @@ import { ITileConfig } from "../components/Tile";
 
 export const CANVAS_BG_COLOR = "#FFFFFF";
 
-export const DEFAULT_SECTIONS: string[] = [
+export const EPICS: string[] = [
   "前端",
   "后端",
   "DevOps",
@@ -11,6 +11,7 @@ export const DEFAULT_SECTIONS: string[] = [
   "测试",
   "游戏",
 ];
+export const EPICS_AMOUNT = EPICS.length;
 
 export const TILE_CONFIGS: ITileConfig[] = [
   {
@@ -34,7 +35,7 @@ export const TILE_CONFIGS: ITileConfig[] = [
     y: 0,
   },
   {
-    color: "#795548",
+    color: "#F57F17",
     x: 36,
     y: 0,
   },

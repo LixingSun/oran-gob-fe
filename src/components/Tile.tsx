@@ -1,11 +1,14 @@
 import { animated, SpringRef, SpringValue } from "@react-spring/three";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { Text } from "@react-three/drei";
 import cnFont from "../fonts/cn-font.ttf";
 import {
+  NAVIGATING_ANIMATION_INIT_CONFIG,
+  NAVIGATING_ANIMATION_UPDATE,
   TILE_HOVER_ANIMATION_UPDATE,
   TILE_RESET_ANIMATION_UPDATE,
 } from "../constants/animation";
+import { useSpring } from "@react-spring/core";
 
 export interface ITileConfig {
   color: string;
@@ -22,6 +25,7 @@ interface TileProps {
   textZ: SpringValue<number>;
   onClick: () => void;
   text: string;
+  active: boolean;
 }
 
 export const Tile: FC<TileProps> = ({
@@ -33,8 +37,21 @@ export const Tile: FC<TileProps> = ({
   textZ,
   onClick,
   text,
+  active,
 }) => {
   const AnimatedText: FC<any> = animated(Text);
+
+  const [navigatingAnimationSpring, navigatingAnimationApi] = useSpring(
+    NAVIGATING_ANIMATION_INIT_CONFIG(tileIndex)
+  );
+
+  useEffect(() => {
+    console.log("update");
+    navigatingAnimationApi.start(
+      NAVIGATING_ANIMATION_UPDATE(active, tileIndex)
+    );
+  }, [active]);
+
   return (
     <>
       <animated.mesh
@@ -54,14 +71,14 @@ export const Tile: FC<TileProps> = ({
         rotation={[Math.PI / 2, 0, 0]}
       >
         <cylinderBufferGeometry args={[20, 20, 3, 6]} />
-        <meshPhongMaterial
+        <animated.meshPhongMaterial
           attach="material"
-          color={tileIndex === 3 ? "#6200EA" : "#000000"}
+          color={navigatingAnimationSpring.color}
         />
       </animated.mesh>
       <AnimatedText
         font={cnFont}
-        color="#F0F0F0"
+        color="#FFFFFF"
         fontSize={7}
         position-x={x}
         position-y={y}
