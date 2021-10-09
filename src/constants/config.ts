@@ -1,5 +1,7 @@
 import { ITileConfig } from "../components/Tile";
 
+export const CANVAS_BG_COLOR = "#FFFFFF";
+
 export const DEFAULT_SECTIONS: string[] = [
   "前端",
   "后端",

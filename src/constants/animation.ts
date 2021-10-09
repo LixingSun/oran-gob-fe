@@ -1,4 +1,4 @@
-import { easeCubicOut, easeCubicInOut, easeQuadOut } from "d3-ease";
+import { easeCubicOut, easeCubicInOut, easeQuadInOut } from "d3-ease";
 import {
   TILE_CONFIGS,
   TILE_NAVIGATION_X_LIST,
@@ -27,18 +27,18 @@ export const LANDING_ANIMATION_UPDATE = (animatedIndex: number) => ({
   cameraZ: CAMERA_LANDING_ANIMATED_Z,
 });
 
-export const DIVING_ANIMATION_INIT_CONFIG = (index) => ({
+export const DIVING_ANIMATION_INIT_CONFIG = (index: number) => ({
   x: TILE_CONFIGS[index].x,
   y: TILE_CONFIGS[index].y,
   cameraZ: CAMERA_LANDING_ANIMATED_Z,
 
   config: {
     duration: DIVING_DURATION,
-    easing: easeQuadOut,
+    easing: easeQuadInOut,
   },
 });
 
-export const DIVING_ANIMATION_UPDATE = (animatedIndex) => ({
+export const DIVING_ANIMATION_UPDATE = (animatedIndex: number) => ({
   x: TILE_NAVIGATION_X_LIST[animatedIndex],
   y: TILE_NAVIGATION_Y,
   cameraZ: CAMERA_DIVING_ANIMATED_Z,
@@ -46,7 +46,9 @@ export const DIVING_ANIMATION_UPDATE = (animatedIndex) => ({
 
 export const TILE_HOVER_DURATION = 700;
 export const TILE_ORIGINAL_Z = 0;
-export const TILE_TEXT_ORIGINAL_Z = 7;
+export const TILE_TEXT_ORIGINAL_Z = 3;
+export const TILE_ANIMATED_Z = 10;
+export const TILE_TEXT_ANIMATED_Z = 13;
 
 export const TILE_HOVER_ANIMATION_INIT_CONFIG = () => ({
   z: TILE_ORIGINAL_Z,
@@ -56,3 +58,15 @@ export const TILE_HOVER_ANIMATION_INIT_CONFIG = () => ({
     easing: easeCubicInOut,
   },
 });
+
+export const TILE_HOVER_ANIMATION_UPDATE =
+  (tileIndex: number) => (animatedIndex: number) => {
+    if (animatedIndex === tileIndex)
+      return { z: TILE_ANIMATED_Z, textZ: TILE_TEXT_ANIMATED_Z };
+  };
+
+export const TILE_RESET_ANIMATION_UPDATE =
+  (tileIndex: number) => (animatedIndex: number) => {
+    if (animatedIndex === tileIndex)
+      return { z: TILE_ORIGINAL_Z, textZ: TILE_TEXT_ORIGINAL_Z };
+  };

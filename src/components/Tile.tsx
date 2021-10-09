@@ -2,6 +2,10 @@ import { animated, SpringRef, SpringValue } from "@react-spring/three";
 import React, { FC } from "react";
 import { Text } from "@react-three/drei";
 import cnFont from "../fonts/cn-font.ttf";
+import {
+  TILE_HOVER_ANIMATION_UPDATE,
+  TILE_RESET_ANIMATION_UPDATE,
+} from "../constants/animation";
 
 export interface ITileConfig {
   color: string;
@@ -10,7 +14,6 @@ export interface ITileConfig {
 }
 
 interface TileProps {
-  tileConfig: ITileConfig;
   tileIndex: number;
   animationApi: SpringRef<{ z: number; textZ: number }>;
   x: SpringValue<number>;
@@ -22,7 +25,6 @@ interface TileProps {
 }
 
 export const Tile: FC<TileProps> = ({
-  tileConfig,
   tileIndex,
   animationApi,
   x,
@@ -37,27 +39,25 @@ export const Tile: FC<TileProps> = ({
     <>
       <animated.mesh
         onPointerOver={() => {
-          animationApi.start((animatedIndex) => {
-            if (animatedIndex === tileIndex) return { z: 10, textZ: 17 };
-            return {};
-          });
+          animationApi.start(TILE_HOVER_ANIMATION_UPDATE(tileIndex));
         }}
         onPointerOut={() => {
-          animationApi.start((animatedIndex) => {
-            if (animatedIndex === tileIndex) return { z: 0, textZ: 7 };
-            return {};
-          });
+          animationApi.start(TILE_RESET_ANIMATION_UPDATE(tileIndex));
         }}
         onClick={() => {
           onClick?.();
+          animationApi.start(TILE_RESET_ANIMATION_UPDATE(tileIndex));
         }}
         position-x={x}
         position-y={y}
         position-z={z}
         rotation={[Math.PI / 2, 0, 0]}
       >
-        <cylinderBufferGeometry args={[20, 20, 5, 6]} />
-        <meshPhongMaterial attach="material" color="#000000" />
+        <cylinderBufferGeometry args={[20, 20, 3, 6]} />
+        <meshPhongMaterial
+          attach="material"
+          color={tileIndex === 3 ? "#6200EA" : "#000000"}
+        />
       </animated.mesh>
       <AnimatedText
         font={cnFont}

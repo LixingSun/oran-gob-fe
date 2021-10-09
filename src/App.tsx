@@ -1,10 +1,13 @@
 import "./App.css";
 import React, { FC, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Stats } from "@react-three/drei";
 import { animated } from "@react-spring/three";
-import { useSprings, useSpring } from "@react-spring/core";
-import { DEFAULT_SECTIONS, TILE_CONFIGS } from "./constants/config";
+import { useSprings } from "@react-spring/core";
+import {
+  CANVAS_BG_COLOR,
+  DEFAULT_SECTIONS,
+  TILE_CONFIGS,
+} from "./constants/config";
 import { Tile } from "./components/Tile";
 import { AnimateCamera } from "./components/AnimatedCamera";
 import {
@@ -35,8 +38,7 @@ const App: FC = () => {
 
   return (
     <div className="App">
-      <Canvas onCreated={(state) => state.gl.setClearColor("#FFFFFF")}>
-        <Stats showPanel={0} className="stats" />
+      <Canvas onCreated={(state) => state.gl.setClearColor(CANVAS_BG_COLOR)}>
         <directionalLight
           position={[90, 90, 120]}
           intensity={1}
@@ -46,7 +48,6 @@ const App: FC = () => {
         {TILE_CONFIGS.map((tileConfig, tileIndex) => (
           <animated.group key={tileIndex}>
             <Tile
-              tileConfig={tileConfig}
               tileIndex={tileIndex}
               animationApi={hoverAnimationApi}
               x={
