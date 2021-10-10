@@ -1,4 +1,12 @@
-.App {
+.layout {
   position: relative;
   height: 100vh;
+}
+
+.layout__list {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 70vh;
+  width: 100vw;
 }

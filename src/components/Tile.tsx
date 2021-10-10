@@ -46,7 +46,6 @@ export const Tile: FC<TileProps> = ({
   );
 
   useEffect(() => {
-    console.log("update");
     navigatingAnimationApi.start(
       NAVIGATING_ANIMATION_UPDATE(active, tileIndex)
     );

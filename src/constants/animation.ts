@@ -85,7 +85,6 @@ export const TILE_RESET_ANIMATION_UPDATE =
       return { z: TILE_ORIGINAL_Z, textZ: TILE_TEXT_ORIGINAL_Z };
   };
 
-const CENTER_TILE_COLOR = "#6200EA";
 const DEFAULT_TILE_COLOR = "#000000";
 
 export const NAVIGATING_ANIMATION_INIT_CONFIG = (index: number) => () => ({
