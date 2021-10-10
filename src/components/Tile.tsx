@@ -1,5 +1,10 @@
-import { animated, SpringRef, SpringValue } from "@react-spring/three";
-import React, { FC, useEffect } from "react";
+import {
+  animated,
+  AnimatedComponent,
+  SpringRef,
+  SpringValue,
+} from "@react-spring/three";
+import React, { ElementType, FC, useEffect } from "react";
 import { Text } from "@react-three/drei";
 import cnFont from "../fonts/cn-font.ttf";
 import {
@@ -39,7 +44,7 @@ export const Tile: FC<TileProps> = ({
   text,
   active,
 }) => {
-  const AnimatedText: FC<any> = animated(Text);
+  const AnimatedText: AnimatedComponent<ElementType> = animated(Text);
 
   const [navigatingAnimationSpring, navigatingAnimationApi] = useSpring(
     NAVIGATING_ANIMATION_INIT_CONFIG(tileIndex)
