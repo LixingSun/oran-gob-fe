@@ -1,4 +1,5 @@
 import { ITileConfig } from "../components/Tile";
+import { FRONTEND_NOTES } from "../notes/frontend";
 
 export const CANVAS_BG_COLOR = "#FFFFFF";
 
@@ -53,3 +54,5 @@ export const TILE_CONFIGS: ITileConfig[] = [
 
 export const TILE_NAVIGATION_X_LIST = [-114, -76, -38, 0, 38, 76, 114];
 export const TILE_NAVIGATION_Y = 65;
+
+export const CONTENT_LIST = [FRONTEND_NOTES, [], [], [], [], [], []];

@@ -1,4 +1,9 @@
-import { EPICS, EPICS_AMOUNT, TILE_CONFIGS } from "../constants/config";
+import {
+  CONTENT_LIST,
+  EPICS,
+  EPICS_AMOUNT,
+  TILE_CONFIGS,
+} from "../constants/config";
 import { animated, SpringRef } from "@react-spring/three";
 import { Tile } from "./Tile";
 import {
@@ -6,6 +11,7 @@ import {
   DIVING_ANIMATION_UPDATE,
   DIVING_CAMERA_ANIMATION_INIT_CONFIG,
   DIVING_CAMERA_ANIMATION_UPDATE,
+  DIVING_CAMERA_DURATION,
   LANDING_ANIMATION_INIT_CONFIG,
   LANDING_ANIMATION_UPDATE,
   LANDING_DURATION,
@@ -15,6 +21,7 @@ import React, { FC, useState } from "react";
 import { AnimateCamera } from "./AnimatedCamera";
 import { useSpring, useSprings } from "@react-spring/core";
 import { useActiveEpicIndexStore } from "../stores/useActiveEpicIndexStore";
+import { useEpicMenuStore } from "../stores/useEpicMenuStore";
 
 const startDiving = (
   animationApi: SpringRef<{ x: number; y: number }>,
@@ -39,6 +46,7 @@ export const EpicTiles: FC = () => {
   const { activeEpicIndex, setActiveEpicIndex } = useActiveEpicIndexStore(
     (state) => state
   );
+  const setMenuList = useEpicMenuStore((state) => state.setMenuList);
 
   const [landingDone, setLandingDone] = useState(false);
 
@@ -68,8 +76,12 @@ export const EpicTiles: FC = () => {
       if (activeEpicIndex === -1) {
         startDiving(divingAnimationApi, divingCameraAnimationApi, tileIndex);
         setActiveEpicIndex(tileIndex);
+        setTimeout(() => {
+          setMenuList(CONTENT_LIST[tileIndex]);
+        }, DIVING_CAMERA_DURATION);
       } else {
         setActiveEpicIndex(tileIndex);
+        setMenuList(CONTENT_LIST[tileIndex]);
       }
     }
   };
