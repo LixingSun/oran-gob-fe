@@ -3,10 +3,34 @@
   height: 100vh;
 }
 
-.layout__list {
+.layout__main {
   position: absolute;
   left: 0;
   bottom: 0;
-  height: 60vh;
-  width: 30vw;
+  height: 65vh;
+  width: 100vw;
+  display: flex;
+}
+
+.layout__menu {
+  width: 30%;
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.layout__menu li {
+  background-color: #000;
+  color: #FFF;
+  font-size: 16px;
+  line-height: 2;
+  padding: 6px 12px 6px 30px;
+}
+
+.layout__menu li + li {
+  margin-top: 10px;
+}
+
+.layout__content {
+  width: 70%;
+  padding: 24px;
 }
