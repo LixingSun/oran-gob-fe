@@ -2,6 +2,7 @@ import { INoteItem } from "../../types/notes";
 import frontendBasic01 from "./frontend_basics_01.md";
 import introToReactThreeFiber from "./introduction_to_react_three_fiber.md";
 import introToWebAnimation from "./introduction_to_web_animation.md";
+import pairProgramming from "./pair_programming.md";
 
 export const FRONTEND_NOTES: INoteItem[] = [
   {
@@ -15,5 +16,9 @@ export const FRONTEND_NOTES: INoteItem[] = [
   {
     title: "Introduction to Web Animation",
     file: introToWebAnimation,
+  },
+  {
+    title: "Pair Programming",
+    file: pairProgramming,
   },
 ];
